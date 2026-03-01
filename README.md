@@ -1,54 +1,94 @@
-# Customer Segmentation System (K-Means Clustering)
+# Customer Segmentation System (K-Means + Silhouette + PCA)
 
-This project performs **customer segmentation** using the classic *Mall Customers* dataset. It follows a practical analytics workflow: **EDA → feature selection → scaling → K-Means clustering → cluster visualization → segment profiling**.
+An end-to-end **customer segmentation** project using the *Mall Customers* dataset. The workflow follows a practical analytics pipeline:
 
-The goal is to identify distinct customer groups (segments) based on behavior and demographics, which can be used for **targeted marketing**, **personalized offers**, and **customer strategy**.
+**EDA → Feature Scaling → K Selection (Elbow + Silhouette) → K-Means Clustering → Segment Visualization (2D + PCA) → Export Segmented Dataset**
+
+This project is built to be **resume/portfolio-ready** with clear visuals, interpretable segments, and reproducible steps.
+
+---
+
+## Why this project matters
+
+Customer segmentation helps businesses:
+- design **targeted marketing campaigns**
+- improve **customer retention**
+- personalize **offers and recommendations**
+- allocate budget toward **high-value segments**
+
+Instead of treating all customers the same, segmentation helps identify *behavioral clusters* based on income and spending.
 
 ---
 
 ## Dataset
 
 - File: `Mall_Customers.csv`
-- Common fields in this dataset:
-  - `Gender`
-  - `Age`
+- Key fields used for clustering:
   - `Annual Income (k$)`
   - `Spending Score (1-100)`
+- Additional fields for profiling:
+  - `Age`
+  - `Gender`
 
 ---
 
-## What This Project Does
+## Approach
 
-### 1) Exploratory Data Analysis (EDA)
-- Basic dataset inspection (shape, missing values, summary stats)
-- Distribution plots for key features (Age, Income, Spending Score)
-- Quick category insights (e.g., Gender distribution)
+### 1) Feature Engineering + Scaling
+- Selected features: **Annual Income** and **Spending Score**
+- Applied **StandardScaler** to prevent clustering bias due to scale differences.
 
-### 2) Customer Segmentation (K-Means)
-- Scales numeric features (so clustering is not biased by units)
-- Uses K-Means clustering to segment customers
-- Supports selecting **optimal K** using an elbow-style approach (and/or silhouette depending on your implementation)
+### 2) Choosing Optimal K
+We used two standard methods to choose the number of clusters:
 
-### 3) Visualizations
-- Cluster visualization using 2D projection (PCA)
-- Clear plots to understand separation between segments
+- **Elbow Method (Inertia vs K)** → looks for the point where improvement slows
+- **Silhouette Score vs K** → measures cluster separation quality
 
-### 4) Segment Profiling (Business Interpretation)
-After clustering, the project creates a **cluster profile** to make the results useful for business decisions.  
-For each segment (cluster), it summarizes:
+✅ From the silhouette curve, the best separation occurs at **K = 5** (peak score).
 
-- **Cluster size** (number of customers)
-- **Average Age**
-- **Average Annual Income**
-- **Average Spending Score**
+### 3) Clustering + Visualization
+- Trained **K-Means** with selected K
+- Visualized clusters:
+  - in original feature space (Income vs Spending)
+  - in **PCA 2D projection** (to validate separation in reduced dimensions)
 
-This helps convert “clusters” into interpretable groups such as:
-- High income + high spending (premium customers)
-- High income + low spending (potential upsell targets)
-- Low income + high spending (value seekers / promotions-sensitive)
-- Low income + low spending (low-engagement customers)
+### 4) Segment Profiling + Export
+- Added cluster labels to each customer
+- Exported final result as: **`segmented_customers.csv`**
 
-> The exact segment labels depend on the cluster centers produced by the model.
+---
+
+## Results Preview (Saved Plots)
+
+### Elbow Method (Inertia vs K)
+Helps identify diminishing returns as K increases.
+![Elbow Curve](assets/elbow_curve.png)
+
+### Silhouette Score vs K
+Peak silhouette indicates best cluster separation (**K = 5**).
+![Silhouette Score vs K](assets/silhouette_vs_k.png)
+
+### Customer Segments (Income vs Spending Score)
+Clear segmentation of customers across spending behavior and income levels.
+![Income vs Spending Clusters](assets/customer_segments_income_spending.png)
+
+### PCA Projection of Customer Clusters
+PCA confirms clusters remain separable in reduced dimensions.
+![PCA Clusters](assets/pca_clusters.png)
+
+---
+
+## Segment Interpretation (Business-Ready)
+
+Once clusters are formed, interpret them using cluster centers + profile table. Typical segment meanings:
+
+- **High income + high spending** → premium customers (retain, VIP offers)
+- **High income + low spending** → upsell potential (personalized recommendations)
+- **Low income + high spending** → deal-driven buyers (discount campaigns)
+- **Low income + low spending** → low engagement (reactivation strategy)
+- **Mid income + mid spending** → stable customers (loyalty programs)
+
+> Final labels depend on the actual cluster centers computed in your run.
 
 ---
 
